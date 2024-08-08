@@ -1,0 +1,87 @@
+#!/bin/bash
+
+create_database() {
+    read -p "Enter database name: " db_name
+    if [ ! -d "databases" ]; then 
+        mkdir databases
+    fi
+
+    if [ -d "./databases/$db_name" ]; then
+        echo "Database already exists."
+    else
+        mkdir "./databases/$db_name"
+        echo "Database '$db_name' created."
+    fi
+     
+    main_menu
+}
+
+# Function to list all databases (directories)
+list_databases() {
+    echo "Databases:"
+    # Check if the 'databases' directory exists
+    if [ -d "./databases" ]; then
+        # List all directories inside the 'databases' directory
+        ls -d ./databases/*/
+    else
+        echo "No databases found. The 'databases' directory does not exist."
+    fi
+    main_menu
+}
+
+
+# Function to drop a database (directory)
+drop_database() {
+    read -p "Enter database name to drop: " db_name
+
+    if [ -d "./databases/$db_name" ]; then
+        rm -r "./databases/$db_name"
+        echo "Database '$db_name' dropped."
+    else
+        echo "Database does not exist."
+    fi
+    main_menu
+}
+
+# Function to connect to a database
+connect_database() {
+    read -p "Enter database name to connect: " db_name
+    if [ -d "./databases/$db_name" ]; then
+        cd "./databases/$db_name"
+        echo "Connected to database '$db_name'."
+        db_menu
+    else
+        echo "Database does not exist."
+        main_menu
+    fi
+}
+
+ 
+ 
+
+main_menu() {
+    echo "Main Menu:"
+    select choice in "Create Database" "List Databases" "Connect To Database" "Drop Database" "Exit"
+    do
+        case $choice in
+            "Create Database")
+                create_database
+                ;;
+            "List Databases")
+                list_databases
+                ;;
+            "Connect To Database")
+                connect_database
+                ;;
+            "Drop Database")
+                drop_database
+                ;;
+            "Exit")
+                exit 0
+                ;;
+            *) echo "Invalid option" ;;
+        esac
+    done
+}
+
+main_menu
